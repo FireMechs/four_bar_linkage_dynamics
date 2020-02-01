@@ -38,18 +38,38 @@ if sl <= pq
        disp("Mechanism = crank-rocker");
        disp("It's Grashofs");
        disp("Shortest link one of the sides links");
-       for BAD = 0: 5 : 360
-            BD = sqrt((crank^2 + fixed_link^2)-(2*crank*follower*cosd(BAD)));
-            ABD = acosd((BD^2 + crank^2 -fixed_link^2 )/(2 * BD * crank));
-            ADB = 180 - (ABD + BAD);
-            BCD = acosd((coupler^2 + follower^2 - BD^2)/(2*coupler*follower));
-            BDC = acosd((BD^2 + follower^2 - coupler^2)/(2*BD*follower));
-            ADC = ADB + BDC;
-            CBD = 180-(BDC + BCD);
-            o4 = 180 - (ADC);
-            o3 = 180 - (ADC + BCD);
-            disp(["O3 : ",o3 , " | O4: ",o4]);
-        end
+       % If the link is crank-rocker then...
+       
+           L2 = crank; % crank
+           L3  =coupler; % coupler
+           L4 = follower; % Follower
+           L1 = fixed_link; % Fixed_link
+          
+       for O2 = 0: ((1/36)*pi) : (2*pi)
+           % initial values of O3 and O4
+           O3 = (1/90)*pi; O4 = (1/60)*pi;
+           while(1)
+                % iterative functions
+                f1= L2*cos(O2) + L3 * cos(O3) - L4*cos(O4) - L1;
+                f2= L2*sin(O2) + L3 * sin(O3) - L4*sin(O4);
+                f1f2 = [f1;f2]; % functions matrix
+                disp(["O3:",O3," O4:",O4,"f1:",f1," f2:",f2]);
+                % check if those functions values are close enough to zero
+                temp_f1 = round(f1,5);temp_f2 = round(f2,5);
+                if(temp_f1 == 0) || (temp_f2 == 0)
+                    disp("----------------------------------");
+                    break
+                end
+                % Jacobian Matrix
+                a = -1 * L3 * sin(O3); b = L4 * sin(O4); c = L3*cos(O3);
+                d = -1 * L4 * cos(O4);
+                Jacobi = [a b;c d];
+                CO3O4 = -1*(Jacobi\f1f2);
+                % new values of O3 and O4
+                O3 =O3 + CO3O4(1);
+                O4 =O4 + CO3O4(2);
+            end
+       end
    end
 else
    %  double rocker mechanism
