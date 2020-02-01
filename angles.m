@@ -17,7 +17,7 @@ for BAD = 0: 5 : 360
     % simulating the mechanism
     % The follower do not rotate fully
     plot([0 crank*cos(BAD)], [0 crank*sin(BAD)],'ro-');hold on;
-    plot([crank*cos(BAD) crank*cos(BAD)+coupler*cos(o3)], [crank*sin(BAD) crank*sin(BAD)+b*sin(o3)], 'ro-'); hold on;
+    plot([crank*cos(BAD) crank*cos(BAD)+coupler*cos(o3)], [crank*sin(BAD) crank*sin(BAD)+coupler*sin(o3)], 'ro-'); hold on;
     plot([0 fixed_link], [0 0], 'ro-'); hold on;
     plot([fixed_link crank*cos(BAD)+coupler*cos(o3)], [0 crank*sin(BAD)+coupler*sin(o3)], 'ro-');hold off;
     axis([-100 250 -150 300]);
