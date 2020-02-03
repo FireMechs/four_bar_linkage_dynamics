@@ -1,8 +1,11 @@
+% [-------Eric--ENM221-0068/2017-----------] %
 %  inputs for the various lengths
 crank = input("Crank?:");
 coupler = input("Coupler?:");
 follower = input("Follower?:");
 fixed_link = input("fixed_link?:");
+ww = input("Input angular Velocity:");
+anw = input("Input angular acceleration:");
 
 bar_lengths = [crank , coupler, follower , fixed_link];
 
@@ -22,6 +25,8 @@ end
 
 disp(["Value s+l: ",sl," : p+q: ", pq,"."]);
 
+% [-------Eric--ENM221-0068/2017-----------] %
+
 % Decide of the type of the bar
 if sl <= pq
    % double crank and crank rocker mechanism
@@ -39,16 +44,20 @@ if sl <= pq
        disp("It's Grashofs");
        disp("Shortest link one of the sides links");
        % If the link is crank-rocker then...
-       
+       % using Newton-Raphson method , we can obtain the values of O3 and
+       % O4 iteratively for the different values of O2
+       % This is used combined with Vector-loop method
            L2 = crank; % crank
            L3  =coupler; % coupler
            L4 = follower; % Follower
            L1 = fixed_link; % Fixed_link
           % counters
-           i = 1; j  = 1; k = 0;
+           i = 1; j  = 1; k = 1;
            % initial values of O3 and O4
            nr = (1/3)*pi; nf = (7/18)*pi;
            % arrays for storing the values
+% [-------Eric--ENM221-0068/2017-----------] % 
+           DataW3(k) = 0; DataW4(k)=0; DataA3(k)=0;DataA4(k)=0;
            Datanr(i) = rad2deg(nr); Datanf(j) = rad2deg(nf);
        for nw = 0: ((1/36)*pi): (2*pi)
                 % iterative functions
@@ -78,23 +87,83 @@ if sl <= pq
                 nr =nr + CO3O4(1);
                 nf =nf + CO3O4(2);
            end
-            disp("----------------------------------------------");
-            k = k + 1;
             i = i + 1; j = j + 1;
             Datanr(i) = rad2deg(nr);
             Datanf(j) = rad2deg(nf);
+            disp("----------------------------------------------");
+% [-------Eric--ENM221-0068/2017-----------] %            
+            % Velocity Analysis
+            w = -1 * L3 * sin(nr);x = L4*sin(nf);y = L3 *cos(nr); 
+            z = -1 * L4 * cos(nf);
+           
+            r = L2 * sin(nw) * ww; t = -1 *L2*cos(nw)*ww; % ww is the  angular velocity of the crank 
+            
+            %Compute results for wr and wf
+            disp(w);
+            syms wr wf
+            veqn1 = w * wr + x * wf == r;
+			veqn2 = y * wf + z * wf == t;
+            
+            vsol = solve([veqn1, veqn2],[wr,wf]);
+            vu = vsol.wr; vh = vsol.wf;
+            disp(["Velocity   w3: ",vu , " w4:",vh,"."]);
+            DataW3(k) = vu; DataW4(k)= vh;
+            
+            % Acceleration Analysis
+            aw = -1 * L3 * sin(nr);ax = L4*sin(nf);ay = L3 *cos(nr); 
+            az = -1 * L4 * cos(nf);
+           
+            ar = L2*(sin(nw)*anw + cos(nw)*ww^2) + L3*cos(nr)*wr^2 - L4*cos(nf)*wf^2;% anw is the angular velocity of the crank 
+            at = -1 * L2*(cos(nw)*anw - sin(nw)*ww^2) + L3*sin(nr)*wr^2 - L4*sin(nf)*wf^2;
+           
+            %Compute results for wr and wf
+            syms awr awf
+            aeqn1 = aw * awr + ax * awf == ar;
+			aeqn2 = ay * awr + az * awf == at;
+            
+            asol = solve([aeqn1,aeqn2],[awr , awf]);
+            au = asol.awr; ah = asol.awf;
+            disp(["Acceleration   a3: ",au , " a4:",ah,"."]);
+            DataA3(k) = au; DataA4(k)=ah;
+            k = k + 1;
+            
        end
        % clean up duplicates and print out the result
-       % Duplicates occur due to memory management of MATLAB
+       % Duplicates occur due to memory management. MATLAB can only expand
+       % an array dynamically upto 50. After then it deletes and renews it.
        fnr = unique(Datanr, 'stable');
        disp(fnr);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'Thita3', fnr, 'sheet1', Range);
        disp("---------");
        fnf = unique(Datanf,'stable');
        disp(fnf);
-       disp(k);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'Thita4', fnf, 'sheet1', Range);
+       disp("---------");
+       fV3 = unique(DataW3 , 'stable');
+       disp(fV3);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'DataW3', fV3, 'sheet1', Range);
+       disp("---------");
+       fV4 = unique(DataW4 , 'stable');
+       disp(fV4);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'DataW4', fV4, 'sheet1', Range);
+       disp("---------");
+       fA3 = unique(DataA3 , 'stable');
+       disp(fA3);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'fA3', fA3, 'sheet1', Range);
+       disp("---------");
+       fA4 = unique(DataA4 , 'stable');
+       disp(fA4);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'fA4', fA4, 'sheet1', Range);
    end
 else
    %  double rocker mechanism
    disp("Mechanism is double-rocker");
    disp(["s+l: ", sl , " > ", pq,"."]);
 end
+% [-------Eric--ENM221-0068/2017-----------] %
