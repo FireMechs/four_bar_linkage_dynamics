@@ -57,7 +57,7 @@ if sl <= pq
            nr = (1/3)*pi; nf = (7/18)*pi;
            % arrays for storing the values
 % [-------Eric--ENM221-0068/2017-----------] % 
-           DataW3(k) = 0; DataW4(k)=0; DataA3(k)=0;DataA4(k)=0;
+           DataW3(k) = sym(0); DataW4(k)=sym(0); DataA3(k)=sym(0);DataA4(k)=sym(0);
            Datanr(i) = rad2deg(nr); Datanf(j) = rad2deg(nf);
        for nw = 0: ((1/36)*pi): (2*pi)
                 % iterative functions
@@ -106,8 +106,7 @@ if sl <= pq
             
             vsol = solve([veqn1, veqn2],[wr,wf]);
             vu = vsol.wr; vh = vsol.wf;
-            disp(["Velocity   w3: ",vu , " w4:",vh,"."]);
-            DataW3(k) = vu; DataW4(k)= vh;
+            DataW3(k) = sym(vu); DataW4(k)= sym(vh);
             
             % Acceleration Analysis
             aw = -1 * L3 * sin(nr);ax = L4*sin(nf);ay = L3 *cos(nr); 
@@ -123,43 +122,83 @@ if sl <= pq
             
             asol = solve([aeqn1,aeqn2],[awr , awf]);
             au = asol.awr; ah = asol.awf;
-            disp(["Acceleration   a3: ",au , " a4:",ah,"."]);
-            DataA3(k) = au; DataA4(k)=ah;
+            DataA3(k) = sym(au); DataA4(k)=sym(ah);
             k = k + 1;
             
        end
        % clean up duplicates and print out the result
        % Duplicates occur due to memory management. MATLAB can only expand
        % an array dynamically upto 50. After then it deletes and renews it.
+       
+       % Angular displacement of link 3
        fnr = unique(Datanr, 'stable');
        disp(fnr);
+       Dim = size(fnr);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'Thita3', fnr, 'sheet1', Range);
+       figure; % This ensures all windows are retained
+       title("Thita3");
+       plot(fnr);
        disp("---------");
+       
+       % Angular displacement of link 4
        fnf = unique(Datanf,'stable');
        disp(fnf);
+       Dim = size(fnf);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'Thita4', fnf, 'sheet1', Range);
+       figure;
+       title("Thita4");
+       plot(fnf);
        disp("---------");
-       fV3 = unique(DataW3 , 'stable');
+       
+       % angular velocity W for link 3
+       Double_DataW3 = double(DataW3);
+       fV3 = unique(Double_DataW3 , 'stable');
        disp(fV3);
+       Dim = size(fV3);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'DataW3', fV3, 'sheet1', Range);
+       figure;
+       title("Angular Velocity 3");
+       plot(fV3);
        disp("---------");
-       fV4 = unique(DataW4 , 'stable');
+       
+       % angular velocity W for link 4
+       Double_DataW4 = double(DataW4); % convert syms to double for storage
+       fV4 = unique(Double_DataW4 , 'stable');
        disp(fV4);
+       Dim = size(fV4);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'DataW4', fV4, 'sheet1', Range);
+       figure;
+       title("Angular Velocity 4")
+       plot(fV4);
        disp("---------");
-       fA3 = unique(DataA3 , 'stable');
+       
+       % Angular acceleration  A for link 3 
+       Double_DataA3 = double(DataA3);
+       fA3 = unique(Double_DataA3 , 'stable');
        disp(fA3);
+       Dim = size(fA3);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'fA3', fA3, 'sheet1', Range);
+       figure;
+       title("Angular acceleration 3");
+       plot(fA3);
        disp("---------");
-       fA4 = unique(DataA4 , 'stable');
+       
+       % Angular acceleration A for link 4
+       Double_DataA4 = double(DataA4);
+       fA4 = unique(Double_DataA4 , 'stable');
        disp(fA4);
+       Dim = size(fA4);
        Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
        xlswrite( 'fA4', fA4, 'sheet1', Range);
+       figure;
+       title("Angular acceleration 4");
+       plot(fA4);
+       
    end
 else
    %  double rocker mechanism
