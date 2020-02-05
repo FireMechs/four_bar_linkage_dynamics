@@ -1,3 +1,5 @@
-Four Bar linkage MATLAB simulation programs
+## Four Bar linkage MATLAB programs
 
-fFile  has some intentional bug. Solve the bug and get the code
+Programs is an implementations of Vector loop equations that define a four bar.
+Equations are solved using the newton raphson method.
+Follow up on the pdf attached for more informations.
