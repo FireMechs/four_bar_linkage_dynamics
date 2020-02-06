@@ -55,10 +55,12 @@ if sl <= pq
            i = 1; j  = 1; k = 1;
            % initial values of O3 and O4
            nr = (1/3)*pi; nf = (7/18)*pi;
+           % Data to be plotted in x
+           DataO3 = (0:72)*5;
            % arrays for storing the values
 % [-------Eric--ENM221-0068/2017-----------] % 
            DataW3(k) = sym(0); DataW4(k)=sym(0); DataA3(k)=sym(0);DataA4(k)=sym(0);
-           Datanr(i) = rad2deg(nr); Datanf(j) = rad2deg(nf);
+           Datanr(i) = 0; Datanf(j) = 0;
        for nw = 0: ((1/36)*pi): (2*pi)
                 % iterative functions
                 f_one= L2*cos(nw) + L3 * cos(nr) - L4*cos(nf) - L1;
@@ -87,9 +89,9 @@ if sl <= pq
                 nr =nr + CO3O4(1);
                 nf =nf + CO3O4(2);
            end
-            i = i + 1; j = j + 1;
             Datanr(i) = rad2deg(nr);
             Datanf(j) = rad2deg(nf);
+            i = i + 1; j = j + 1;
             disp("----------------------------------------------");
 % [-------Eric--ENM221-0068/2017-----------] %            
             % Velocity Analysis
@@ -133,71 +135,65 @@ if sl <= pq
        % Angular displacement of link 3
        fnr = unique(Datanr, 'stable');
        disp(fnr);
-       Dim = size(fnr);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'Thita3', fnr, 'sheet1', Range);
-       figure; % This ensures all windows are retained
-       title("Thita3");
-       plot(fnr);
+       % Dim = size(fnr);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'Thita3', fnr, 'sheet1', Range);
+       figure('Name','Thita3');
+       plot(DataO3,fnr);
        disp("---------");
        
        % Angular displacement of link 4
        fnf = unique(Datanf,'stable');
        disp(fnf);
-       Dim = size(fnf);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'Thita4', fnf, 'sheet1', Range);
-       figure;
-       title("Thita4");
-       plot(fnf);
+       % Dim = size(fnf);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'Thita4', fnf, 'sheet1', Range);
+       figure('Name','Thita4');
+       plot(DataO3,fnf);
        disp("---------");
        
        % angular velocity W for link 3
        Double_DataW3 = double(DataW3);
        fV3 = unique(Double_DataW3 , 'stable');
        disp(fV3);
-       Dim = size(fV3);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'DataW3', fV3, 'sheet1', Range);
-       figure;
-       title("Angular Velocity 3");
-       plot(fV3);
+       % Dim = size(fV3);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'DataW3', fV3, 'sheet1', Range);
+       figure('Name','Angular Velocity 3');
+       plot(DataO3,fV3);
        disp("---------");
        
        % angular velocity W for link 4
        Double_DataW4 = double(DataW4); % convert syms to double for storage
        fV4 = unique(Double_DataW4 , 'stable');
        disp(fV4);
-       Dim = size(fV4);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'DataW4', fV4, 'sheet1', Range);
-       figure;
-       title("Angular Velocity 4")
-       plot(fV4);
+       % Dim = size(fV4);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'DataW4', fV4, 'sheet1', Range);
+       figure('Name','Angular Velocity 4')
+       plot(DataO3,fV4);
        disp("---------");
        
        % Angular acceleration  A for link 3 
        Double_DataA3 = double(DataA3);
        fA3 = unique(Double_DataA3 , 'stable');
        disp(fA3);
-       Dim = size(fA3);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'fA3', fA3, 'sheet1', Range);
-       figure;
-       title("Angular acceleration 3");
-       plot(fA3);
+       % Dim = size(fA3);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'fA3', fA3, 'sheet1', Range);
+       figure('Name','Angular acceleration 3');
+       plot(DataO3,fA3);
        disp("---------");
        
        % Angular acceleration A for link 4
        Double_DataA4 = double(DataA4);
-       fA4 = unique(Double_DataA4 , 'stable');
-       disp(fA4);
-       Dim = size(fA4);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'fA4', fA4, 'sheet1', Range);
-       figure;
-       title("Angular acceleration 4");
-       plot(fA4);
+       % fA4 = unique(Double_DataA4 , 'stable');
+       disp(Double_DataA4);
+       % Dim = size(fA4);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'fA4', fA4, 'sheet1', Range);
+       figure('Name','Angular acceleration 4');
+       plot(DataO3,Double_DataA4);
        
    end
 else
