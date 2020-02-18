@@ -11,8 +11,8 @@ bar_lengths = [crank , coupler, follower , fixed_link];
 
 % apply grashof's theorem
 % s and l
-s = max(bar_lengths(:));
-l = min(bar_lengths(:));
+l = max(bar_lengths(:));
+s = min(bar_lengths(:));
 
 sl = s+l;
 % p and q
@@ -35,11 +35,11 @@ if sl <= pq
        disp("Mechanism = Parallel double crank")
        disp(["crank = follower: ", crank , "=" , follower , "and"]);
        disp(["coupler  = fixed link: ", coupler , "=", fixed_link , "."]);
-   elseif l == fixed_link
+   elseif s == fixed_link
        disp("Mechanism = drag double crank");
        disp("It's Grashofs");
        disp([" and shortest link is fixed: ", fixed_link,"."]);
-   elseif (l == crank)|| (l == follower)
+   elseif (s == crank)|| (s == follower)
        disp("Mechanism = crank-rocker");
        disp("It's Grashofs");
        disp("Shortest link one of the sides links");
@@ -57,9 +57,10 @@ if sl <= pq
            nr = (1/3)*pi; nf = (7/18)*pi;
            % Data to be plotted in x
            DataO3 = (0:72)*5;
+           % DataTO3 = (0:69)*5;
            % arrays for storing the values
 % [-------Eric--ENM221-0068/2017-----------] % 
-           DataW3(k) = sym(0); DataW4(k)=sym(0); DataA3(k)=sym(0);DataA4(k)=sym(0);
+           DataW3(k) = sym(0); DataW4(k)=sym(0); DataA3(k)= sym(0);DataA4(k)= sym(0);
            Datanr(i) = 0; Datanf(j) = 0;
        for nw = 0: ((1/36)*pi): (2*pi)
                 % iterative functions
@@ -101,8 +102,9 @@ if sl <= pq
             r = L2 * sin(nw) * ww; t = -1 *L2*cos(nw)*ww; % ww is the  angular velocity of the crank 
             
             %Compute results for wr and wf
-            disp(w);
-            syms wr wf
+            disp("Patience please [let the machine do the job]");
+            
+            syms wr wf 
             veqn1 = w * wr + x * wf == r;
 			veqn2 = y * wf + z * wf == t;
             
@@ -111,12 +113,13 @@ if sl <= pq
             DataW3(k) = sym(vu); DataW4(k)= sym(vh);
             
             % Acceleration Analysis
+            
             aw = -1 * L3 * sin(nr);ax = L4*sin(nf);ay = L3 *cos(nr); 
             az = -1 * L4 * cos(nf);
-           
-            ar = L2*(sin(nw)*anw + cos(nw)*ww^2) + L3*cos(nr)*wr^2 - L4*cos(nf)*wf^2;% anw is the angular velocity of the crank 
-            at = -1 * L2*(cos(nw)*anw - sin(nw)*ww^2) + L3*sin(nr)*wr^2 - L4*sin(nf)*wf^2;
-           
+          
+            ar = L2*(sin(nw)*anw + cos(nw)*ww^2) + L3*cos(nr)*vu^2 - L4*cos(nf)*vh^2;% anw is the angular velocity of the crank 
+            at = -1 * L2*(cos(nw)*anw - sin(nw)*ww^2) + L3*sin(nr)*vu^2 - L4*sin(nf)*vh^2;
+            
             %Compute results for wr and wf
             syms awr awf
             aeqn1 = aw * awr + ax * awf == ar;
@@ -124,7 +127,7 @@ if sl <= pq
             
             asol = solve([aeqn1,aeqn2],[awr , awf]);
             au = asol.awr; ah = asol.awf;
-            DataA3(k) = sym(au); DataA4(k)=sym(ah);
+            DataA3(k) = sym((au/1000)); DataA4(k)=sym((ah/1000));
             k = k + 1;
             
        end
@@ -135,65 +138,77 @@ if sl <= pq
        % Angular displacement of link 3
        fnr = unique(Datanr, 'stable');
        disp(fnr);
-       % Dim = size(fnr);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'Thita3', fnr, 'sheet1', Range);
+       Dim = size(fnr);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'Thita3', fnr, 'sheet1', Range);
        figure('Name','Thita3');
-       plot(DataO3,fnr);
+       plot(DataO3,fnr,'-x');
+       title("Coupler displacement");
+       xlabel("Crank's displacement(deg)");ylabel("Coupler's Displacement");
        disp("---------");
        
        % Angular displacement of link 4
        fnf = unique(Datanf,'stable');
        disp(fnf);
-       % Dim = size(fnf);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'Thita4', fnf, 'sheet1', Range);
+       Dim = size(fnf);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'Thita4', fnf, 'sheet1', Range);
        figure('Name','Thita4');
-       plot(DataO3,fnf);
+       plot(DataO3,fnf,'-x');
+       title("Follower's displacement");
+       xlabel("Crank's displacement(deg)");ylabel("Follower's Displacement");
        disp("---------");
        
        % angular velocity W for link 3
        Double_DataW3 = double(DataW3);
        fV3 = unique(Double_DataW3 , 'stable');
        disp(fV3);
-       % Dim = size(fV3);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'DataW3', fV3, 'sheet1', Range);
+       Dim = size(fV3);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'DataW3', fV3, 'sheet1', Range);
        figure('Name','Angular Velocity 3');
-       plot(DataO3,fV3);
+       plot(DataO3,fV3,'-x');
+       title("Coupler's Velocity");
+       xlabel("Crank's displacement(deg)");ylabel("Coupler's Velocity");
        disp("---------");
        
        % angular velocity W for link 4
        Double_DataW4 = double(DataW4); % convert syms to double for storage
-       fV4 = unique(Double_DataW4 , 'stable');
-       disp(fV4);
-       % Dim = size(fV4);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'DataW4', fV4, 'sheet1', Range);
-       figure('Name','Angular Velocity 4')
-       plot(DataO3,fV4);
+       % fV4 = unique(Double_DataW4 , 'stable');
+       disp(Double_DataW4);
+       Dim = size(Double_DataW4);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'DataW4', Double_DataW4, 'sheet1', Range);
+       figure('Name','Angular Velocity 4');
+       plot(DataO3,Double_DataW4,'-x');
+       title("Follower's Velocity");
+       xlabel("Crank's displacement(deg)");ylabel("Follower's Velocity");
        disp("---------");
        
        % Angular acceleration  A for link 3 
        Double_DataA3 = double(DataA3);
        fA3 = unique(Double_DataA3 , 'stable');
        disp(fA3);
-       % Dim = size(fA3);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'fA3', fA3, 'sheet1', Range);
+       Dim = size(fA3);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'fA3',fA3, 'sheet1', Range);
        figure('Name','Angular acceleration 3');
-       plot(DataO3,fA3);
+       plot(DataO3,fA3,'-x');
+       title("Coupler's Acceleration");
+       xlabel("Crank's displacement(deg)");ylabel("Coupler's Acceleration");
        disp("---------");
        
        % Angular acceleration A for link 4
        Double_DataA4 = double(DataA4);
-       % fA4 = unique(Double_DataA4 , 'stable');
-       disp(Double_DataA4);
-       % Dim = size(fA4);
-       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       % xlswrite( 'fA4', fA4, 'sheet1', Range);
+       fA4 = unique(Double_DataA4 , 'stable');
+       disp(fA4);
+       Dim = size(fA4);
+       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       xlswrite( 'fA4', fA4, 'sheet1', Range);
        figure('Name','Angular acceleration 4');
-       plot(DataO3,Double_DataA4);
+       plot(DataO3,fA4,'-x');
+       title("Follower's Acceleration");
+       xlabel("Crank's displacement(deg)");ylabel("Follower's Acceleration");
        
    end
 else
