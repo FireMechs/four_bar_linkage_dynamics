@@ -138,9 +138,10 @@ if sl <= pq
        % Angular displacement of link 3
        fnr = unique(Datanr, 'stable');
        disp(fnr);
-       Dim = size(fnr);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'Thita3', fnr, 'sheet1', Range);
+	   % uncomment the lines below to print the data to excel files
+       % Dim = size(fnr);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'Thita3', fnr, 'sheet1', Range);
        figure('Name','Thita3');
        plot(DataO3,fnr,'-x');
        title("Coupler displacement");
@@ -150,9 +151,9 @@ if sl <= pq
        % Angular displacement of link 4
        fnf = unique(Datanf,'stable');
        disp(fnf);
-       Dim = size(fnf);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'Thita4', fnf, 'sheet1', Range);
+       % Dim = size(fnf);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'Thita4', fnf, 'sheet1', Range);
        figure('Name','Thita4');
        plot(DataO3,fnf,'-x');
        title("Follower's displacement");
@@ -163,9 +164,9 @@ if sl <= pq
        Double_DataW3 = double(DataW3);
        fV3 = unique(Double_DataW3 , 'stable');
        disp(fV3);
-       Dim = size(fV3);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'DataW3', fV3, 'sheet1', Range);
+       % Dim = size(fV3);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'DataW3', fV3, 'sheet1', Range);
        figure('Name','Angular Velocity 3');
        plot(DataO3,fV3,'-x');
        title("Coupler's Velocity");
@@ -176,9 +177,9 @@ if sl <= pq
        Double_DataW4 = double(DataW4); % convert syms to double for storage
        % fV4 = unique(Double_DataW4 , 'stable');
        disp(Double_DataW4);
-       Dim = size(Double_DataW4);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'DataW4', Double_DataW4, 'sheet1', Range);
+       % Dim = size(Double_DataW4);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'DataW4', Double_DataW4, 'sheet1', Range);
        figure('Name','Angular Velocity 4');
        plot(DataO3,Double_DataW4,'-x');
        title("Follower's Velocity");
@@ -189,9 +190,9 @@ if sl <= pq
        Double_DataA3 = double(DataA3);
        fA3 = unique(Double_DataA3 , 'stable');
        disp(fA3);
-       Dim = size(fA3);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'fA3',fA3, 'sheet1', Range);
+       % Dim = size(fA3);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'fA3',fA3, 'sheet1', Range);
        figure('Name','Angular acceleration 3');
        plot(DataO3,fA3,'-x');
        title("Coupler's Acceleration");
@@ -202,9 +203,9 @@ if sl <= pq
        Double_DataA4 = double(DataA4);
        fA4 = unique(Double_DataA4 , 'stable');
        disp(fA4);
-       Dim = size(fA4);
-       Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
-       xlswrite( 'fA4', fA4, 'sheet1', Range);
+       % Dim = size(fA4);
+       % Range = ['A1:',strrep([char(64+floor(Dim(2)/26)),char(64+rem(Dim(2),26))],'@',''),num2str(Dim(1))];
+       % xlswrite( 'fA4', fA4, 'sheet1', Range);
        figure('Name','Angular acceleration 4');
        plot(DataO3,fA4,'-x');
        title("Follower's Acceleration");
